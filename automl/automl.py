@@ -46,8 +46,8 @@ def h2o_w (task, target, split, copy_data):
         print("done")
 
 class AutoMl_library():
-    def __init__(self, copy_data, x_train, x_test, y_train, y_test, split, task, target):
-        self.data = copy_data
+    def __init__(self, x_train, x_test, y_train, y_test, split, task, target):
+        #self.data = copy_data
         self.x_train = x_train
         self.x_test = x_test
         self.y_train = y_train
@@ -57,8 +57,9 @@ class AutoMl_library():
         self.target = target
 
     def pycaret_w(self, data):
+        print("run_pycaret")
         train_data, test_data = train_test_split(data, test_size=self.split, random_state=1)
-        url = "C:\\Users\\sin\\PycharmProjects\\sibal\\automlboard\\pycaret.csv"
+        url = "C:\\Users\\sinb1\\PycharmProjects\\gradio demo\\automlboard\\pycaret.csv"
         if self.task == "Regressor":
             set = regression_setup(data=train_data, target=self.target, test_data=test_data, normalize=True,
                                    transformation=False)
@@ -69,7 +70,8 @@ class AutoMl_library():
             return best_model
 
     def h2o_w(self, data):
-        url = "C:\\Users\\sin\\PycharmProjects\\sibal\\automlboard\\h2o.csv"
+        print("run_h2o")
+        url = "C:\\Users\\sinb1\\PycharmProjects\\gradio demo\\automlboard\\h2o.csv"
         if self.task == "Regressor":
             h2o.init()
             feature = data.drop(self.target, axis=1)

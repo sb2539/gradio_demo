@@ -8,7 +8,6 @@ import seaborn as sns
 import torch.nn as nn
 from pathlib import Path
 graphviz.set_jupyter_format('png')
-#TODO: CSS파일 넣어서 헤더같은 것들 꾸미기
 from PIL import Image, ImageDraw, ImageFont, ImageEnhance
 import matplotlib.colors as mcolors
 import math
@@ -143,7 +142,7 @@ def split_data(split, data, target):
     xtest = scaler.fit_transform(xtest)
     print("split_done")
     return xtrain, xtest, ytrain, ytest
-URL = "C:\\Users\\sin\\PycharmProjects\\sibal\\automlboard\\"
+URL = "C:\\Users\\sinb1\\PycharmProjects\\gradio demo\\automlboard\\"
 def call_auto_re(target, copy_data, split_bar, tool):
     tool_list = ["Pycaret", "H2o"]
     if tool == "모두":
@@ -161,19 +160,19 @@ def call_auto_re(target, copy_data, split_bar, tool):
                 df = pd.read_csv(url)
                 yield df
     elif tool == "Pycaret":
-        url = "C:\\Users\\sin\\PycharmProjects\\sibal\\automlboard\\pycaret.csv"
+        url = "C:\\Users\\sinb1\\PycharmProjects\\gradio demo\\automlboard\\pycaret.csv"
         task = "Regressor"
         pycaret_w(task, target, split_bar, copy_data)
         df = pd.read_csv(url)
         return df
     elif tool == "H2o":
-        url = "C:\\Users\\sin\\PycharmProjects\\sibal\\automlboard\\h2o.csv"
+        url = "C:\\Users\\sinb1\\PycharmProjects\\gradio demo\\automlboard\\h2o.csv"
         task = "Regressor"
         h2o_w(task, target, split_bar, copy_data)
         df = pd.read_csv(url)
         return df
     else :
-        url = "C:\\Users\\sin\\PycharmProjects\\sibal\\automlboard\\pycaret.csv"
+        url = "C:\\Users\\sinb1\\PycharmProjects\\gradio demo\\automlboard\\pycaret.csv"
         task = "Regressor"
         print("none")
         pycaret_w(task, target, split_bar, copy_data)
@@ -182,11 +181,11 @@ def call_auto_re(target, copy_data, split_bar, tool):
 
 def read_csv(tool):
     if tool == "Pycaret":
-        url = "C:\\Users\\sin\\PycharmProjects\\sibal\\automlboard\\pycaret.csv"
+        url = "C:\\Users\\sinb1\\PycharmProjects\\gradio demo\\automlboard\\pycaret.csv"
         df = pd.read_csv(url)
         return df
     elif tool == "H2o":
-        url = "C:\\Users\\sin\\PycharmProjects\\sibal\\automlboard\\h2o.csv"
+        url = "C:\\Users\\sinb1\\PycharmProjects\\gradio demo\\automlboard\\h2o.csv"
         df = pd.read_csv(url)
         return df
 
