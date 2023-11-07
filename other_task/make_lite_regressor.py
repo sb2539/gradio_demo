@@ -23,7 +23,7 @@ from other_task.make_classification_table import classification_table
 from gradio.themes.utils import fonts
 import pandas as pd
 import matplotlib.pyplot as plt
-from pipeline.class_test import Dataload_anl, Drop_data, Data_preprocess
+from pipeline.class_test import Load_Data, Drop_data, Data_preprocess
 from automl.automl import AutoMl_library
 
 
@@ -52,7 +52,7 @@ def analysis_variable(select, data):
 # 데이터 분석
 def data_ana(data, drop_option, target):
     column_list = []
-    data_anal = Dataload_anl(None, drop_option, target)
+    data_anal = Load_Data(None, drop_option, target)
     target_data = data_anal.get_target(data)
     target_data = pd.DataFrame(target_data)
     dropped_data = data_anal.drop_nan(data)
