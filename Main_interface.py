@@ -22,57 +22,85 @@ from scipy import stats
 import copy
 from sklearn.model_selection import train_test_split
 from automl.automl import pycaret_w, h2o_w
-from other_task.make_classification_table import classification_table
-from other_task.make_regressor import regression
-from other_task.make_classification import classification
-from other_task.make_lite_regressor import lt_regression
+# from other_task.make_classification_table import classification_table
+# from other_task.make_regressor import regression
+# from other_task.make_classification import classification
+# from other_task.make_lite_regressor import lt_regression
 
+def hint1_image(hint1_option):
+    path = ""
+    if hint1_option == "이미지데이터":
+        path = "image/main/image.JPG"
+    elif hint1_option == "테이블데이터":
+        path = "image/main/tabular.JPG"
+    elif hint1_option == "시계열데이터":
+        path = "image/main/timeseries.JPG"
+    elif hint1_option == "혼합데이터":
+        path = "image/main/mixdata.JPG"
+    return gr.Image(value=path)
 
+def hint2_image(hint2_option):
+    path = ""
+    if hint2_option == "분류 힌트":
+        path = "image/main/classific_task.JPG"
+    elif hint2_option == "예측 힌트":
+        path = "image/main/pred_task.JPG"
+    return gr.Image(value=path)
+def mv_stage_btn():
+    return gr.Button(visible=True)
 def next_q2():
-    return gr.Text(visible=True), gr.Image(visible=True), gr.Dropdown(visible=True)
+    return gr.Text(visible=True), gr.Image(visible=True, elem_id='container'), gr.Radio(visible=True),gr.Dropdown(visible=True) ,gr.Text(visible=False), gr.Image(visible=False, elem_id=None),gr.Radio(visible=False), gr.Dropdown(visible=False)
 def next_q3():
-    return gr.Text(visible=True),gr.Image(visible=True) ,gr.Radio(visible=True), gr.Button(visible=True)
-def next_interface(data_type, purpose, process_type):
-    if data_type == "표":
-        if purpose == "표 내부에 있는 정보를 예측하고 싶다." and process_type == "아니오":
-            return regression.launch(inbrowser=True)
-        elif purpose == "표 내부에 있는 정보를 예측하고 싶다." and process_type == "예":
-            return lt_regression.launch(inbrowser=True)
-        elif purpose == "표 내부의 정보를 판별하고 싶다." and process_type == "예":
-            return classification_table.launch(inbrowser=True)
-        elif purpose == "표 내부의 정보를 판별하고 싶다." and process_type == "아니오":
-            return classification_table.launch(inbrowser=True)
-    elif data_type == "이미지":
-        if purpose == "이미지를 판별하고 싶다." and process_type == "아니오":
-            return classification.launch(inbrowser=True)
-        elif purpose == "이미지를 판별하고 싶다." and process_type == "예":
-            return classification.launch(inbrowser=True)
+    return gr.Text(visible=False),gr.Text(visible=False),gr.Image(visible=False, elem_id=None), gr.Dropdown(visible=False), gr.Text(visible=True), gr.Image(visible=True, elem_id="container"), gr.Dropdown(visible=True)
 
-with gr.Blocks(title="어떤 모델을 만들어줄까요?", theme=gr.themes.Soft(font=fonts.GoogleFont("Jua")),css="temp/style.css") as selection:
+            return classification_table.launch(inbrowser=True)
+
+def next_interface(data_type, purpose, user_lev):
+    if data_type == "시계열 데이터"and purpose == "예측":
+        if user_lev == "없다":
+            return ts_fore_lite.launch(inbrowser=True)
+        elif user_lev == "없지만 직접하고 싶다" or user_lev == "경험이 있다":
+            return ts_fore.launch(inbrowser=True)
+    elif data_type =="테이블 데이터" and purpose == "예측":
+        if user_lev == "없다":
+            return regression_lite.launch(inbrowser=True)
+        elif user_lev == "없지만 직접하고 싶다" or user_lev == "경험이 있다":
+            return regression.launch(inbrowser=True)
+with gr.Blocks(title="쉬운 머신 러닝?", theme=gr.themes.Soft(font=fonts.GoogleFont("Jua")),css="temp/style.css") as selection:
     gr.Markdown(
         """
         # 어떤 머신러닝 모델을 만들어드릴까요?
         """
         , elem_id='title'
     )
-    # 첫번째 질문
-    q1 = gr.Text(label="질문 1", value="데이터가 필요합니다 어떤 형태의 데이터를 가지고 계신가요?")
-    hint1 = gr.Image(label="답변이 어렵다면 참고해주세요", value="image/data.png", type="pil", container=False)
-    job = gr.Dropdown(label="답변을 선택하세요", choices=["이미지", "표"])
 
-    # 두번째 질문
-    q2 = gr.Text(label="질문 2", value="데이터로 하고자 하는 일이 무엇인가요?", visible=False)
-    hint2 = gr.Image(label="답변이 어렵다면 참고해주세요", visible=False,value="image/task.png", type="pil", container=False)
-    purpose = gr.Dropdown(label="관련 있는 답변을 선택하세요", choices=["이미지를 판별하고 싶다.", "표 내부에 있는 정보를 예측하고 싶다.", "표 내부의 정보를 판별하고 싶다."], visible=False)
+    with gr.Row(scale = 1):
+        # 질의를 위한 column
+        with gr.Column(scale=1):
+            q1 = gr.Text(label="질문 1", value="데이터가 필요합니다 어떤 형태의 데이터를 가지고 계신가요?")
+            r1 = gr.Dropdown(label="답변을 선택하세요", choices=["이미지 데이터", "테이블 데이터","시계열 데이터","혼합 데이터"],interactive=True)
+            q2 = gr.Text(label="질문 2", value="어떤 목적으로 사용하려고 하나요?", visible=False)
+            r2 = gr.Dropdown(label="답변을 선택하세요", choices=["예측하려고 한다.", "분류하려고 한다."], visible=False, interactive=True)
+        with gr.Column(scale=1):
+            hint1 = gr.Image(label="1번 질문 힌트", type="pil", container=True, elem_id='container')
+            hint1_drop = gr.Radio(label="확인할 힌트를 선택하세요",value=None,choices=["이미지데이터", "테이블데이터","시계열데이터","혼합데이터"])
+            hint2 = gr.Image(label="2번 질문 힌트", visible=False, value="image/main/classific_task.JPG", type="pil",
+                                 container=True)
+            hint2_drop = gr.Radio(label="확인할 힌트를 선택하세요",value=None,choices=["분류 힌트", "예측 힌트"], visible=False, interactive=True)
+    with gr.Row(scale = 1):
+        with gr.Column():
+            q3 = gr.Text(label="질문 3", value="데이터 조작, 분석, 머신러닝과 관련한 경험이 있나요?", visible=False)
+            hint3 = gr.Image(label="3번 질문 힌트", value="image/main/hint3.JPG", visible=False)
+            r3 = gr.Dropdown(label="답변을 선택하세요", choices=["없다", "없지만 직접하고 싶다", "경험이 있다"], interactive=True, visible=False)
 
-    # 세번째 질문
-    q3 = gr.Text(label="질문 3", value="이후의 과정을 기본 값으로 진행할까요? 아니오를 선택하시면 사용자의 선택에 따라 진행됩니다.", visible=False)
-    hint3 = gr.Image(label="답변이 어렵다면 참고해주세요", visible=False, value="image/hint3.JPG", type="pil", container=False)
-    process_type = gr.Radio(label="선택해주세요", choices=["예", "아니오"], visible=False)
-    process_btn = gr.Button(value="선택하신 답변을 토대로 실행됩니다.", visible=False)
+    stage1_btn = gr.Button(value="만들기 시작", visible=False)
 
-    job.change(fn=next_q2, inputs=None, outputs=[q2, hint2, purpose])
-    purpose.change(fn = next_q3, inputs=None, outputs=[q3,hint3 ,process_type,process_btn])
-    process_btn.click(fn = next_interface, inputs=[job, purpose, process_type], outputs=None)
+    hint1_drop.change(fn=hint1_image, inputs=[hint1_drop], outputs=[hint1])
+    r1.select(fn=next_q2, inputs=None, outputs=[q2, hint2, r2,hint2_drop ,q1, hint1, r1, hint1_drop])
+    hint2_drop.change(fn=hint2_image, inputs=[hint2_drop], outputs=[hint2])
+    r2.select(fn=next_q3, inputs=None, outputs=[q2, r2, hint2, hint2_drop, q3, hint3, r3])
+    r3.select(fn = mv_stage_btn, inputs = None, outputs=[stage1_btn])
+    # purpose.change(fn = next_q3, inputs=None, outputs=[q3,hint3 ,process_type,process_btn])
+    stage1_btn.click(fn = next_interface, inputs=[r1, r2, r3], outputs=None)
 if __name__ == "__main__":
     selection.launch(share=True)
